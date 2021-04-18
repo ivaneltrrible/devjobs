@@ -20,7 +20,7 @@ class VacanteController extends Controller
     public function index()
     {
         //
-        return 'Desde Vacantes';
+        return view('vacantes.index');
     }
 
     /**
@@ -31,6 +31,7 @@ class VacanteController extends Controller
     public function create()
     {
         //
+        return view('vacantes.create');
     }
 
     /**
