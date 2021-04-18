@@ -1,2 +1,3 @@
-<a class="text-white text-sm uppercase p-3 font-bold {{ Request::is('vacantes') ? 'bg-teal-500' : ''}}" href="{{ route('vacante.show', ['id' => 'hola']) }}">Ver Vacantes</a>
-<a class="text-white text-sm uppercase p-3 font-bold {{ Request::is('vacantes/create') ? 'bg-gray-500 border-b-0' : ''}}" href="{{ route('vacante.create') }}">Nueva Vacante</a>
+<a href="{{ route('vacante.index') }}" class="font-bold text-white p-3 text-sm uppercase  {{ Request::is('vacantes') ? 'bg-teal-500' : '' }}" >Ver Vacantes</a>
+
+<a href="{{ route('vacante.create') }}" class="font-bold text-white p-3 text-sm uppercase  {{ Request::is('vacantes/create') ? 'bg-teal-500' : '' }}" >Nueva Vacante</a>
