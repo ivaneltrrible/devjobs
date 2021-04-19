@@ -6,7 +6,9 @@
 
 @section('content')
     <h1 class="text-center text-2xl mt-10">Crea una nueva vacante</h1>
-
+    @foreach ( $categorias as $categoria )
+        {{$categoria->nombre}}
+    @endforeach 
     <form action="#" class="max-w-lg my-10 mx-auto">
         <div class="mb-5">
             <label for="titulo" class="text-gray-700 text-sm block mb-2">Titulo: </label>
