@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategoriaSeed::class,
             UserSeed::class,
+            ExperienciaSeed::class,
         ]);
     }
 }
