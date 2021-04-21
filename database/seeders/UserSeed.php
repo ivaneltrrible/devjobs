@@ -20,7 +20,8 @@ class UserSeed extends Seeder
         DB::table('users')->insert([
             'name' => 'Lucio Ivan Benito Marquez',
             'email' => 'correo@correo.com',
-            'password' => Hash::make('12345'),
+            'email_verified_at' => Carbon::now(),  
+            'password' => Hash::make('rootroot'), 
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);

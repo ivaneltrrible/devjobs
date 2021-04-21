@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             CategoriaSeed::class,
             UserSeed::class,
             ExperienciaSeed::class,
+            UbicacionSeed::class,
+            SalarioSeed::class
         ]);
     }
 }
