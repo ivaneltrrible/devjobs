@@ -85,7 +85,11 @@
     //Funciones 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const editor = new MediumEditor('.editable');
+            const editor = new MediumEditor('.editable', {
+                toolbar : {
+                    buttons 
+                }
+            });
         })
     </script>
 @endsection
