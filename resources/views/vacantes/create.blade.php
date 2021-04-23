@@ -94,6 +94,12 @@
                     sticky : true,
                 }
             });
+            
+            //Se obtiene el contenido del editor para mandar a la base de datos
+            editor.subscribe('editableInput' , function (eventObj, editable){
+                const contenido = editor.getContent();
+                document.querySelector('#descripcion').value = contenido;
+            })
         })
     </script>
 @endsection
