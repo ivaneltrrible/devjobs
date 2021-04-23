@@ -62,11 +62,11 @@
         </div>
         {{-----------------------------NOTE  MEDIUM EDITOR DESCRIPTION  ----------------------}}
         <div class="mb-5">
-            <label for="editor" class="text-gray-700 text-sm block mb-2">Descripcion de Vacante</label>
+            <label for="descripcion" class="text-gray-700 text-sm block mb-2">Descripcion de Vacante:</label>
 
-            <div class="editable">
-
+            <div class="editable form-input w-full bg-gray-100 text-gray-700 p-3 rounded">
             </div>
+            <input type="hidden" name="descripcion" id="descripcion" value="">
         </div>
 
         {{-----------------------------NOTE  BOTON DE PUBLICAR VACANTE  ----------------------}}
@@ -85,9 +85,13 @@
     //Funciones 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // Se crea el objeto de editor para inicializar funciones 
             const editor = new MediumEditor('.editable', {
                 toolbar : {
-                    buttons 
+                    buttons : ['bold', 'italic', 'underline', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedList', 'unorderedList', 'h2', 'h3'],
+                    static : true,
+                    sticky : true,
                 }
             });
         })
