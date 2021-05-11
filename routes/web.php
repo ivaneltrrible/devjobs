@@ -27,3 +27,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //###### Rutas de Vacantes
 Route::get('/vacantes' , [VacanteController::class, 'index'])->name('vacante.index');
 Route::get('/vacantes/create', [VacanteController::class, 'create'])->name('vacante.create');
+
+//###### Subir Imagenes
+Route::post('/vacantes/imagen', [VacanteController::class, 'imagen'])->name('vacante.imagen');
+Route::post('/vacantes/borrarimagen', [VacanteController::class, 'borrarimagen'])->name('vacante.borrarimagen');

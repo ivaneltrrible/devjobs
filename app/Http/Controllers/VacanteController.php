@@ -100,4 +100,15 @@ class VacanteController extends Controller
     {
         //
     }
+
+    //SECTION SUBIR IMAGENES CON DROPZONE
+    public function imagen(Request $request)
+    {   
+        $imagen = $request->file('file');  // Obtener imagen del front
+        $nombreImagen = time() . '.' . $imagen->extension(); //Cambiar el nombre de la img a la hora que se subio
+
+        $imagen->move(public_path('/storage/vacantes'), $nombreImagen); //se mueve la nueva imagen a esta ubicacion
+        return response()->json(['correcto' => $nombreImagen]); // se retorna en respuesta al front en formato json el nombre de la imagen
+
+    }
 }

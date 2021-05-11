@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('styles')
+    {{--  LINK DE MEDIUM EDITOR  --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/medium-editor/5.23.3/css/medium-editor.min.css" integrity="sha512-zYqhQjtcNMt8/h4RJallhYRev/et7+k/HDyry20li5fWSJYSExP9O07Ung28MUuXDneIFg0f2/U3HJZWsTNAiw==" crossorigin="anonymous" />
+    {{--  LINK DE DROPZONE  --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/dropzone.min.css" integrity="sha512-jU/7UFiaW5UBGODEopEqnbIAHOI8fO6T99m7Tsmqs2gkdujByJfkCbbfPSN4Wlqlb9TGnsuC0YgUgWkRBK7B9A==" crossorigin="anonymous" />
 @endsection
 
 @section('navegacion')
@@ -68,7 +71,16 @@
             </div>
             <input type="hidden" name="descripcion" id="descripcion" value="">
         </div>
+        {{-----------------------------NOTE  DROPZONE  ----------------------}}
+        <div class="mb-5">
+            <label for="descripcion" class="text-gray-700 text-sm block mb-2">Imagen de Vacante:</label>
 
+            <div id="dropzoneDevJobs" class="dropzone bg-gray-100 rounded">
+            </div>
+            <p id="alertaDropZone"></p>
+
+            <input type="hidden" name="imagen" id="imagen" value="">
+        </div>
         {{-----------------------------NOTE  BOTON DE PUBLICAR VACANTE  ----------------------}}
         <button 
             type="submit"
@@ -80,18 +92,28 @@
 @endsection
 
 @section('scripts')
+    {{--  LINK DE MEDIUM-EDITOR  --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-editor/5.23.3/js/medium-editor.min.js" integrity="sha512-5D/0tAVbq1D3ZAzbxOnvpLt7Jl/n8m/YGASscHTNYsBvTcJnrYNiDIJm6We0RPJCpFJWowOPNz9ZJx7Ei+yFiA==" crossorigin="anonymous"></script>
+    {{--  LINK DE DROPZONE  --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/dropzone.min.js" integrity="sha512-llCHNP2CQS+o3EUK2QFehPlOngm8Oa7vkvdUpEFN71dVOf3yAj9yMoPdS5aYRTy8AEdVtqUBIsVThzUSggT0LQ==" crossorigin="anonymous"></script>
 
-    //Funciones 
+    {{-- NOTE: Funciones  --}}
     <script>
+        Dropzone.autoDiscover = false;
         document.addEventListener('DOMContentLoaded', () => {
+            //Para retirar el error de que busque siempre el elemento automaticamente de dropzone
+            
 
+            //SECTION MEDIUM-EDITOR //////////////////////////////
             // Se crea el objeto de editor para inicializar funciones 
             const editor = new MediumEditor('.editable', {
                 toolbar : {
                     buttons : ['bold', 'italic', 'underline', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedList', 'unorderedList', 'h2', 'h3'],
                     static : true,
                     sticky : true,
+                },
+                placeholder : {
+                    text : 'Informacion de la vacante',
                 }
             });
             
@@ -100,6 +122,50 @@
                 const contenido = editor.getContent();
                 document.querySelector('#descripcion').value = contenido;
             })
+
+            //SECTION DROPZONE ///////////////////////////////
+            const dropzoneDevJobs = new Dropzone('#dropzoneDevJobs', {
+                url: "/vacantes/imagen",
+                dictFileTooBig: 'La imagen no puede pesar mas de 2Mb',
+                maxFilesize: 2,
+                addRemoveLinks: true,
+                dictRemoveFile: 'Quitar imagen',
+                dictDefaultMessage: 'Subir imagen de la vacante',
+                maxFiles: 1,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                },
+                success: function (file, response){
+                    console.log(response);
+                    document.querySelector('#alertaDropZone').textContent = ''; 
+
+                    //Se agrega al value la respuesta del servidor (ruta-imagen) en el input hidden
+                    document.querySelector('#imagen').value = response.correcto;
+                    //NOTE: add attribute for file parameter and access to axios element
+                    file.nombreServidor = response.correcto;
+                },
+                error: function (file, response){
+                    console.log(file);
+                    console.log(response);
+                    document.querySelector('#alertaDropZone').textContent = response;
+                },
+                maxfilesexceeded: function (file){
+                    if( this.files[1] != null){
+                        this.removeFile(this.files[0]);
+                        this.addFile(file);
+                    }
+                },
+                removedfile: function (file, response){
+                    console.log('Fue eliminado el archivo: ', file.nombreServidor);
+
+                    //NOTE: peticion for axios to delete image in dropzone
+                    params = {
+
+                    }
+                    axios('vacantes/borrarimagen', )
+                }
+            });
+            
         })
     </script>
 @endsection
