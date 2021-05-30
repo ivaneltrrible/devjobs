@@ -61,6 +61,9 @@ class VacanteController extends Controller
             'experiencia' => 'required',
             'ubicacion' => 'required',
             'salarios' => 'required',
+            'descripcion' => 'required|min:100',
+            'imagen' => 'required',
+            'skills' => 'required',
             
         ]);
         return 'desde store';

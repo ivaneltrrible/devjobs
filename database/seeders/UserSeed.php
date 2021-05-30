@@ -22,6 +22,7 @@ class UserSeed extends Seeder
             'email' => 'correo@correo.com',
             'email_verified_at' => Carbon::now(),  
             'password' => Hash::make('rootroot'), 
+            'email_verified_at' => Carbon::now(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);

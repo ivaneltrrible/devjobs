@@ -46,7 +46,10 @@
             <select name="categoria" id="categoria" class="w-full block p-3 rounded focus:outline-none border border-gray-200 text-gray-700 leading-tight focus:bg-white focus:border-gray-500 bg-gray-100">
                 <option value="" selected disabled>-- Seleccione una opcion --</option>
                 @foreach ($categorias as $categoria )
-                    <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                    <option
+                        {{ old('categoria') == $categoria->id ? 'selected' : '' }}
+                        value="{{ $categoria->id }}">
+                        {{ $categoria->nombre }}</option>
                 @endforeach
             </select>
 
@@ -67,7 +70,9 @@
             <select name="experiencia" id="experiencia" class="w-full block p-3 rounded focus:outline-none border border-gray-200 text-gray-700 leading-tight focus:bg-white focus:border-gray-500 bg-gray-100">
                 <option value="" selected disabled>-- Seleccione una opcion --</option>
                 @foreach ($experiencias as $experiencia )
-                    <option value="{{ $experiencia->id }}">{{ $experiencia->nombre }}</option>
+                    <option
+                    {{ old('experiencia') == $experiencia->id ? 'selected' : '' }}
+                    value="{{ $experiencia->id }}">{{ $experiencia->nombre }}</option>
                 @endforeach
             </select>
 
@@ -88,7 +93,9 @@
             <select name="ubicacion" id="ubicacion" class="w-full block p-3 rounded focus:outline-none border border-gray-200 text-gray-700 leading-tight focus:bg-white focus:border-gray-500 bg-gray-100">
                 <option value="" selected disabled>-- Seleccione una opcion --</option>
                 @foreach ($ubicaciones as $ubicacion )
-                    <option value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
+                    <option
+                    {{ old('ubicacion') == $ubicacion->id ? 'selected' : '' }}
+                    value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
                 @endforeach
             </select>
 
@@ -109,7 +116,9 @@
             <select name="salario" id="salario" class="w-full block p-3 rounded focus:outline-none border border-gray-200 text-gray-700 leading-tight focus:bg-white focus:border-gray-500 bg-gray-100">
                 <option value="" selected disabled>-- Seleccione una opcion --</option>
                 @foreach ($salarios as $salario )
-                    <option value="{{ $salario->id }}">{{ $salario->nombre }}</option>
+                    <option 
+                    {{ old('salario') == $salario->id ? 'selected' : ''}}
+                    value="{{ $salario->id }}">{{ $salario->nombre }}</option>
                 @endforeach
             </select>
 
@@ -130,19 +139,40 @@
 
             <div class="editable form-input w-full bg-gray-100 text-gray-700 p-3 rounded">
             </div>
-            <input type="hidden" name="descripcion" id="descripcion" value="">
+            <input type="hidden" name="descripcion" id="descripcion" value="{{ old('descripcion') }}">
+
+            @error('descripcion')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="flex justify-center mt-3">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
         {{-----------------------------NOTE  DROPZONE  ----------------------}}
         <div class="mb-5">
-            <label for="descripcion" class="text-gray-700 text-sm block mb-2">Imagen de Vacante:</label>
+            <label for="dropzoneDevJobs" class="text-gray-700 text-sm block mb-2">Imagen de Vacante:</label>
 
             <div id="dropzoneDevJobs" class="dropzone bg-gray-100 rounded">
             </div>
             <p id="alertaDropZone"></p>
 
-            <input type="hidden" name="imagen" id="imagen" value="">
+            <input type="hidden" name="imagen" class="" id="imagen" value="{{ old('imagen') }}">
+            @error('imagen')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="flex justify-center mt-3">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
-        {{-----------------------------NOTE  DROPZONE  ----------------------}}
+        {{-----------------------------NOTE  HABILIDADES  ----------------------}}
         <div class="mb-5">
             <label for="skills" class="text-gray-700 text-sm block mb-2">Habilidades y Conocimientos:</label>
             @php
@@ -173,11 +203,11 @@
             //Para retirar el error de que busque siempre el elemento automaticamente de dropzone
             
 
-            //SECTION MEDIUM-EDITOR //////////////////////////////
+            /////////////////////////////////////// SECTION MEDIUM-EDITOR //////////////////////////////
             // Se crea el objeto de editor para inicializar funciones 
             const editor = new MediumEditor('.editable', {
                 toolbar : {
-                    buttons : ['bold', 'italic', 'underline', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedList', 'unorderedList', 'h2', 'h3'],
+                    buttons : ['bold', 'italic', 'underline', 'anchor', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'orderedlist', 'unorderedlist', 'h2', 'h3'],
                     static : true,
                     sticky : true,
                 },
@@ -192,7 +222,10 @@
                 document.querySelector('#descripcion').value = contenido;
             })
 
-            //SECTION DROPZONE ///////////////////////////////
+            //Se llena el input hidden con la information del old() de laravel para que no se borre dicha informacion
+            editor.setContent(document.querySelector('#descripcion').value);
+
+            ///////////////////////////////////////////// SECTION DROPZONE ///////////////////////////////////
             const dropzoneDevJobs = new Dropzone('#dropzoneDevJobs', {
                 url: "/vacantes/imagen",
                 //dictFileTooBig: 'La imagen no puede pesar mas de 2Mb',
@@ -203,6 +236,20 @@
                 maxFiles: 1,
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                },
+                init: function(){
+                    if(document.querySelector('#imagen').value.trim()){
+                        let imagenPublicada = {};
+                            imagenPublicada.size = 1234;
+                            imagenPublicada.name = document.querySelector('#imagen').value;
+
+                            this.options.addedfile.call(this, imagenPublicada);
+                            this.options.thumbnail.call(this, imagenPublicada, `/storage/vacantes/${imagenPublicada.name}`);
+
+                            imagenPublicada.previewElement.classList.add('dz-sucess');
+                            imagenPublicada.previewElement.classList.add('dz-complete');
+
+                    }
                 },
                 success: function (file, response){
                     console.log(response);
@@ -227,7 +274,7 @@
 
                     //NOTE: peticion for axios to delete image in dropzone
                     params = {
-                        imagen: file.nombreServidor
+                        imagen: file.nombreServidor ?? document.querySelector('#imagen').value
                     }
                     axios.post('/vacantes/borrarimagen', params)
                         .then( respuesta => console.log(respuesta))
