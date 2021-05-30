@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Salario;
 use App\Models\Vacante;
 use App\Models\Categoria;
 use App\Models\Ubicacion;
 use App\Models\Experiencia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class VacanteController extends Controller
 {
@@ -52,7 +54,16 @@ class VacanteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Validar lo que se ingresa en el formato
+        $data = $request->validate([
+            'titulo' => 'required|min:8',
+            'categoria' => 'required',
+            'experiencia' => 'required',
+            'ubicacion' => 'required',
+            'salarios' => 'required',
+            
+        ]);
+        return 'desde store';
     }
 
     /**
@@ -99,6 +110,7 @@ class VacanteController extends Controller
     public function destroy(Vacante $vacante)
     {
         //
+        
     }
 
     //SECTION SUBIR IMAGENES CON DROPZONE
@@ -107,8 +119,21 @@ class VacanteController extends Controller
         $imagen = $request->file('file');  // Obtener imagen del front
         $nombreImagen = time() . '.' . $imagen->extension(); //Cambiar el nombre de la img a la hora que se subio
 
-        $imagen->move(public_path('/storage/vacantes'), $nombreImagen); //se mueve la nueva imagen a esta ubicacion
+        $imagen->move(public_path('storage/vacantes'), $nombreImagen); //se mueve la nueva imagen a esta ubicacion
         return response()->json(['correcto' => $nombreImagen]); // se retorna en respuesta al front en formato json el nombre de la imagen
 
+    }
+    public function borrarimagen(Request $request)
+    {
+        if($request->ajax()){
+            $imagen = $request->get('imagen');
+
+            if(File::exists('storage/vacantes/' . $imagen)){
+                File::delete('storage/vacantes/' . $imagen);
+                return response('Imagen eliminada', 200);
+                
+            }
+            
+        }
     }
 }

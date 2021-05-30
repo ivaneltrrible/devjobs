@@ -17,11 +17,28 @@
     {{--/**************************************************************/
                 /* FORMULARIO DE CREAR VACANTE */
     /**************************************************************/--}}
-    <form action="#" class="max-w-lg my-10 mx-auto">
+    <form action="{{ route('vacante.store') }}" method="post" class="max-w-lg my-10 mx-auto" novalidate>
+        @csrf
         {{-----------------------------NOTE  INPUT DE TITULO  ----------------------}}
         <div class="mb-5">
             <label for="titulo" class="text-gray-700 text-sm block mb-2">Titulo: </label>
-            <input id="titulo" type="text" class="p-3 bg-white rounded form-input w-full @error('titulo') is-invalid @enderror" name="titulo" value="{{ old('titulo') }}" autofocus>
+            <input id="titulo" type="text" class="p-3 bg-white rounded form-input w-full"
+            name="titulo"
+            value="{{ old('titulo') }}"
+            autofocus
+            placeholder="Titulo de la Vacante"
+            >
+
+            @error('titulo')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="mt-3 flex justify-center">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
         {{-----------------------------NOTE  SELECT DE CATEGORIAS  ----------------------}}
         <div class="mb-5">
@@ -32,6 +49,17 @@
                     <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
                 @endforeach
             </select>
+
+            @error('categoria')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="flex justify-center mt-3">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
         {{-----------------------------NOTE  SELECT DE EXPERIENCIAS  ----------------------}}
         <div class="mb-5">
@@ -42,6 +70,17 @@
                     <option value="{{ $experiencia->id }}">{{ $experiencia->nombre }}</option>
                 @endforeach
             </select>
+
+            @error('experiencia')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="flex justify-center mt-3">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
         {{-----------------------------NOTE  SELECT DE UBICACIONES  ----------------------}}
         <div class="mb-5">
@@ -52,6 +91,17 @@
                     <option value="{{ $ubicacion->id }}">{{ $ubicacion->nombre }}</option>
                 @endforeach
             </select>
+
+            @error('ubicacion')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="flex justify-center mt-3">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
         {{-----------------------------NOTE  SELECT DE SALARIOS  ----------------------}}
         <div class="mb-5">
@@ -62,6 +112,17 @@
                     <option value="{{ $salario->id }}">{{ $salario->nombre }}</option>
                 @endforeach
             </select>
+
+            @error('salario')
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                    <strong class="font-bold mb-2 flex justify-center">
+                        Error!
+                    </strong>
+                    <span class="flex justify-center mt-3">
+                        {{ $message }}
+                    </span>
+                </div>
+            @enderror
         </div>
         {{-----------------------------NOTE  MEDIUM EDITOR DESCRIPTION  ----------------------}}
         <div class="mb-5">
@@ -80,6 +141,14 @@
             <p id="alertaDropZone"></p>
 
             <input type="hidden" name="imagen" id="imagen" value="">
+        </div>
+        {{-----------------------------NOTE  DROPZONE  ----------------------}}
+        <div class="mb-5">
+            <label for="skills" class="text-gray-700 text-sm block mb-2">Habilidades y Conocimientos:</label>
+            @php
+                $skills = ['HTML5', 'CSS3', 'CSSGrid', 'Flexbox', 'JavaScript', 'jQuery', 'Node', 'Angular', 'VueJS', 'ReactJS', 'React Hooks', 'Redux', 'Apollo', 'GraphQL', 'TypeScript', 'PHP', 'Laravel', 'Symfony', 'Python', 'Django', 'ORM', 'Sequelize', 'Mongoose', 'SQL', 'MVC', 'SASS', 'WordPress', 'Express', 'Deno', 'React Native', 'Flutter', 'MobX', 'C#', 'Ruby on Rails']
+            @endphp
+            <lista-skills  :skills="{{ json_encode($skills) }}"> </lista-skills>
         </div>
         {{-----------------------------NOTE  BOTON DE PUBLICAR VACANTE  ----------------------}}
         <button 
@@ -126,8 +195,8 @@
             //SECTION DROPZONE ///////////////////////////////
             const dropzoneDevJobs = new Dropzone('#dropzoneDevJobs', {
                 url: "/vacantes/imagen",
-                dictFileTooBig: 'La imagen no puede pesar mas de 2Mb',
-                maxFilesize: 2,
+                //dictFileTooBig: 'La imagen no puede pesar mas de 2Mb',
+                //maxFilesize: 2,
                 addRemoveLinks: true,
                 dictRemoveFile: 'Quitar imagen',
                 dictDefaultMessage: 'Subir imagen de la vacante',
@@ -144,11 +213,6 @@
                     //NOTE: add attribute for file parameter and access to axios element
                     file.nombreServidor = response.correcto;
                 },
-                error: function (file, response){
-                    console.log(file);
-                    console.log(response);
-                    document.querySelector('#alertaDropZone').textContent = response;
-                },
                 maxfilesexceeded: function (file){
                     if( this.files[1] != null){
                         this.removeFile(this.files[0]);
@@ -156,13 +220,17 @@
                     }
                 },
                 removedfile: function (file, response){
-                    console.log('Fue eliminado el archivo: ', file.nombreServidor);
+                    //Eliminar la img del DOM
+                    file.previewElement.parentNode.removeChild(file.previewElement);
+
+                    console.log('Fue eliminado el archivo: ', file);
 
                     //NOTE: peticion for axios to delete image in dropzone
                     params = {
-
+                        imagen: file.nombreServidor
                     }
-                    axios('vacantes/borrarimagen', )
+                    axios.post('/vacantes/borrarimagen', params)
+                        .then( respuesta => console.log(respuesta))
                 }
             });
             
