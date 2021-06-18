@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use auth;
 use Carbon\Carbon;
 use App\Models\Salario;
 use App\Models\Vacante;
@@ -9,15 +10,17 @@ use App\Models\Categoria;
 use App\Models\Ubicacion;
 use App\Models\Experiencia;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\File;
+use App\Http\Controllers\VacanteController;
 
 class VacanteController extends Controller
 {
     //Method Contruct
-    public function __construct()
+    /* public function __construct()
     {
         $this->middleware(['auth', 'verified']);
-    }
+    } */
     /**
      * Display a listing of the resource.
      *
@@ -25,8 +28,13 @@ class VacanteController extends Controller
      */
     public function index()
     {
-        //
-        return view('vacantes.index');
+        //Obtener las vacantes del usuario autentificado de dos maneras diferentes
+        //NOTE: Primer manera
+        //$vacantes = auth()->user()->vacantes;
+
+        $vacantes = Vacante::where('user_id', auth()->user()->id)->paginate(3);
+
+        return view('vacantes.index', compact('vacantes'));
     }
 
     /**
@@ -60,13 +68,25 @@ class VacanteController extends Controller
             'categoria' => 'required',
             'experiencia' => 'required',
             'ubicacion' => 'required',
-            'salarios' => 'required',
+            'salario' => 'required',
             'descripcion' => 'required|min:100',
             'imagen' => 'required',
             'skills' => 'required',
             
         ]);
-        return 'desde store';
+
+        //Almacenar en la BD para
+        auth()->user()->vacantes()->create([
+            'titulo' => $request['titulo'],
+            'descripcion' => $request['descripcion'],
+            'imagen' => $request['imagen'],
+            'skills' => $request['skills'],            
+            'experiencia_id' => $request['experiencia'],
+            'categoria_id' => $request['categoria'],
+            'ubicacion_id' => $request['ubicacion'],
+            'salario_id' => $request['salario'],
+        ]);
+        return redirect()->action([VacanteController::class, 'index']);
     }
 
     /**
@@ -78,7 +98,8 @@ class VacanteController extends Controller
     public function show(Vacante $vacante)
     {
         //
-        return 'Hola desde mostrar';
+        
+        return view('vacantes.show', compact('vacante'));
     }
 
     /**

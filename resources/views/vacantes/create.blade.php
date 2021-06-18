@@ -17,7 +17,7 @@
     {{--/**************************************************************/
                 /* FORMULARIO DE CREAR VACANTE */
     /**************************************************************/--}}
-    <form action="{{ route('vacante.store') }}" method="post" class="max-w-lg my-10 mx-auto" novalidate>
+    <form action="{{ route('vacante.store') }}" method="POST" class="max-w-lg my-10 mx-auto" novalidate>
         @csrf
         {{-----------------------------NOTE  INPUT DE TITULO  ----------------------}}
         <div class="mb-5">
@@ -174,11 +174,23 @@
         </div>
         {{-----------------------------NOTE  HABILIDADES  ----------------------}}
         <div class="mb-5">
-            <label for="skills" class="text-gray-700 text-sm block mb-2">Habilidades y Conocimientos:</label>
+            <label for="skills" class="text-gray-700 text-sm block mb-5">Habilidades y Conocimientos: <span class="text-xs">(Elige al menos 3)</span> </label>
             @php
                 $skills = ['HTML5', 'CSS3', 'CSSGrid', 'Flexbox', 'JavaScript', 'jQuery', 'Node', 'Angular', 'VueJS', 'ReactJS', 'React Hooks', 'Redux', 'Apollo', 'GraphQL', 'TypeScript', 'PHP', 'Laravel', 'Symfony', 'Python', 'Django', 'ORM', 'Sequelize', 'Mongoose', 'SQL', 'MVC', 'SASS', 'WordPress', 'Express', 'Deno', 'React Native', 'Flutter', 'MobX', 'C#', 'Ruby on Rails']
             @endphp
-            <lista-skills  :skills="{{ json_encode($skills) }}"> </lista-skills>
+            <lista-skills
+                :oldskills="{{ json_encode(old('skills')) }}"
+                :skills="{{ json_encode($skills) }}"> </lista-skills>
+            @error('skills')
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3 mb-4">
+                <strong class="font-bold mb-2 flex justify-center">
+                    Error!
+                </strong>
+                <span class="flex justify-center mt-3">
+                    {{ $message }}
+                </span>
+            </div>
+        @enderror
         </div>
         {{-----------------------------NOTE  BOTON DE PUBLICAR VACANTE  ----------------------}}
         <button 

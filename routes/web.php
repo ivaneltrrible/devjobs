@@ -15,20 +15,27 @@ use App\Http\Controllers\VacanteController;
 |
 */
 
-Route::get('/', function () {
-    return view('vacantes.index');
-});
+//Route::get('/', function () {
+//    return view('vacantes.index');
+//})
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Agrupar Rutas para que esten protegidas
+Route::middleware(['auth', 'verified'])->group(function() {
+    //###### Rutas de Vacantes
+    Route::get('/vacantes' , [VacanteController::class, 'index'])->name('vacante.index');
+    Route::get('/vacantes/create', [VacanteController::class, 'create'])->name('vacante.create');
+    Route::post('/vacantes/store', [VacanteController::class, 'store'])->name('vacante.store');
+
+    //###### Subir Imagenes
+    Route::post('/vacantes/imagen', [VacanteController::class, 'imagen'])->name('vacante.imagen');
+    Route::post('/vacantes/borrarimagen', [VacanteController::class, 'borrarimagen'])->name('vacante.borrarimagen');
+});
+
+//Rutas para ver vacantes sin necesidad de loguearse
+Route::get('/vacantes/{vacante}', [VacanteController::class, 'show'])->name('vacante.show');
 
 
-//###### Rutas de Vacantes
-Route::get('/vacantes' , [VacanteController::class, 'index'])->name('vacante.index');
-Route::get('/vacantes/create', [VacanteController::class, 'create'])->name('vacante.create');
-Route::post('/vacantes', [VacanteController::class, 'store'])->name('vacante.store');
-
-//###### Subir Imagenes
-Route::post('/vacantes/imagen', [VacanteController::class, 'imagen'])->name('vacante.imagen');
-Route::post('/vacantes/borrarimagen', [VacanteController::class, 'borrarimagen'])->name('vacante.borrarimagen');

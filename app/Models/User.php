@@ -40,4 +40,10 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //Relacion de 1:n un reclutador puede tener multiples vacantes
+    public function vacantes()
+    {
+        return $this->hasMany(Vacante::class);
+    }
 }
