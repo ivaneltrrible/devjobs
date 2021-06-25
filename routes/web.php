@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VacanteController;
+use App\Http\Controllers\CandidatoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::post('/vacantes/imagen', [VacanteController::class, 'imagen'])->name('vacante.imagen');
     Route::post('/vacantes/borrarimagen', [VacanteController::class, 'borrarimagen'])->name('vacante.borrarimagen');
 });
+
+//Enviar Datos para una vacante sin necesidad de loguearse
+Route::post('/candidatos/store', [CandidatoController::class, 'store'])->name('candidatos.store');
 
 //Rutas para ver vacantes sin necesidad de loguearse
 Route::get('/vacantes/{vacante}', [VacanteController::class, 'show'])->name('vacante.show');
