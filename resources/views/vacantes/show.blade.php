@@ -42,7 +42,7 @@
                 {!! $vacante->descripcion !!}
             </div>
         </div>
-        //FORMULARIO DE CONTACTO
+        {{-- FORMULARIO DE CONTACTO   --}}
         @include('ui.contacto')
     </div>
 @endsection

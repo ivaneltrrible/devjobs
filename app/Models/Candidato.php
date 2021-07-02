@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Candidato extends Model
 {
     use HasFactory;
+
+    //fillable
+    protected $fillable = [
+        'nombre', 'email', 'cv', 'vacante_id'
+    ];
 }

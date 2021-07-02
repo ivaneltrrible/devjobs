@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vacante;
 use App\Models\Candidato;
 use Illuminate\Http\Request;
 
@@ -43,7 +44,28 @@ class CandidatoController extends Controller
             'vacante_id' => 'required'
         ]);
 
-        return 'fallo validacion';
+        //Almacenar documento PDF 
+        if($request->file('cv'))
+        {
+            $archivo = $request->file('cv');
+            $nombreArchivo = time() . "." . $request->file('cv')->extension();
+            $ubicacion = public_path('/storage/cv');
+            $archivo->move($ubicacion, $nombreArchivo);
+        }
+
+        //otra manera de almacenar en la BD por relacion ============================================== 
+            $vacante = Vacante::find($data['vacante_id']);
+            $vacante->candidatos()->create([
+                'nombre' => $data['nombre'],
+                'email' => $data['email'],
+                'cv' => $nombreArchivo,
+            ]); 
+
+        //$candidato = new Candidato($data);
+        //$candidato->cv = "123.pdf";
+        //$candidato->save(); //Se guarda en la BD
+
+        return back()->with('estadoCV', 'Tus datos se enviaron correctamente mucha suerte');
     }
 
     /**

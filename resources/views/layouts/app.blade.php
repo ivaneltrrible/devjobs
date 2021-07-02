@@ -23,6 +23,11 @@
 </head>
 <body class="bg-gray-200 min-h-screen leading-none">
     <div id="app">
+        @if (session('estadoCV'))
+            <div class="text-center font-bold bg-teal-500 py-8 text-gray-100 uppercase">
+                {{ session('estadoCV') }}
+            </div>
+        @endif
         <nav class="bg-gray-800 py-3">
             <div class="container mx-auto md:px-0">
                 <div class="flex items-center justify-around">
