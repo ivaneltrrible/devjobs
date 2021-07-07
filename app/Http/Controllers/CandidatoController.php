@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Vacante;
 use App\Models\Candidato;
 use Illuminate\Http\Request;
+use App\Notifications\NuevoCandidato;
 
 class CandidatoController extends Controller
 {
@@ -60,6 +62,12 @@ class CandidatoController extends Controller
                 'email' => $data['email'],
                 'cv' => $nombreArchivo,
             ]); 
+
+            $delay = Carbon::now()->addSeconds(20);
+            //dd($delay);
+            $reclutador = $vacante->reclutador;
+            $reclutador->notify(( new NuevoCandidato($vacante->titulo))->delay($delay));
+
 
         //$candidato = new Candidato($data);
         //$candidato->cv = "123.pdf";

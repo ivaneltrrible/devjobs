@@ -23,6 +23,7 @@
 </head>
 <body class="bg-gray-200 min-h-screen leading-none">
     <div id="app">
+        {{--  Enviar mensaje cuando envia correctamente la vacante  --}}
         @if (session('estadoCV'))
             <div class="text-center font-bold bg-teal-500 py-8 text-gray-100 uppercase">
                 {{ session('estadoCV') }}
