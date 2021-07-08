@@ -63,10 +63,11 @@ class CandidatoController extends Controller
                 'cv' => $nombreArchivo,
             ]); 
 
-            $delay = Carbon::now()->addSeconds(20);
+            //Se manda notificacion al reclutador que publico la vacante de un nuevo candidato 
+            //$delay = Carbon::now()->addSeconds(20);
             //dd($delay);
             $reclutador = $vacante->reclutador;
-            $reclutador->notify(( new NuevoCandidato($vacante->titulo))->delay($delay));
+            $reclutador->notify(new NuevoCandidato($vacante->titulo));
 
 
         //$candidato = new Candidato($data);

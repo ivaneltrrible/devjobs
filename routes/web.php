@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VacanteController;
 use App\Http\Controllers\CandidatoController;
+use App\Http\Controllers\NotificationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
     //###### Subir Imagenes
     Route::post('/vacantes/imagen', [VacanteController::class, 'imagen'])->name('vacante.imagen');
     Route::post('/vacantes/borrarimagen', [VacanteController::class, 'borrarimagen'])->name('vacante.borrarimagen');
+
+    //###### Notificaciones para Reclutadores
+    Route::get('/notificaciones', NotificationsController::class)->name('notificaciones');
 });
 
 //Enviar Datos para una vacante sin necesidad de loguearse

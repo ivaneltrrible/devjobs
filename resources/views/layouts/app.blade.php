@@ -48,9 +48,15 @@
                                 @endif
                             @else
                                 
-                                <span class="text-gray-300 text-sm pr-4">
+                                <span class="text-gray-300 text-sm pr-2">
                                     {{ Auth::user()->name }}
                                 </span>
+                                <a 
+                                    href="{{ route('notificaciones') }}"
+                                    class="p-1 bg-teal-500 rounded-full text-sm text-white"
+                                >
+                                    {{ Auth::user()->unreadNotifications->count() }}
+                                </a>
 
                                 <a class="hover:no-underline text-gray-300 text-sm p-3" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
